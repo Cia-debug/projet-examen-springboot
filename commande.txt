@@ -1,0 +1,6 @@
+git init
+git add .
+git commit -m "Initial Spring Boot project"
+git branch -M main
+git remote add origin <repo>
+git push -u origin main 

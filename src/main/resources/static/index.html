@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Notes - Examen</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Small additions to ensure everything looks perfect in line with style.css */
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <div class="logo-icon">📝</div>
+                <div>
+                    <h1>Examen App</h1>
+                    <p>Gestion des notes avec élégance</p>
+                </div>
+            </div>
+            <div class="nav-section">
+                <div class="nav-section-title">Menu Principal</div>
+                <div class="nav-item active" data-page="dashboard">
+                    <span class="icon">📊</span> Dashboard
+                </div>
+                <div class="nav-item" data-page="candidats">
+                    <span class="icon">🎓</span> Candidats
+                </div>
+                <div class="nav-item" data-page="correcteurs">
+                    <span class="icon">👨‍🏫</span> Correcteurs
+                </div>
+                <div class="nav-item" data-page="matieres">
+                    <span class="icon">📚</span> Matières
+                </div>
+                <div class="nav-item" data-page="notes">
+                    <span class="icon">📝</span> Notes
+                </div>
+                <div class="nav-item" data-page="calcul">
+                    <span class="icon">🧮</span> Calcul Note Finale
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Dashboard Page -->
+            <section class="page-section active" id="page-dashboard">
+                <div class="page-header">
+                    <h2>Dashboard</h2>
+                    <p>Vue d'ensemble du système d'examen</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card blue">
+                        <div class="stat-icon">🎓</div>
+                        <div class="stat-value" id="stat-candidats">-</div>
+                        <div class="stat-label">Candidats</div>
+                    </div>
+                    <div class="stat-card purple">
+                        <div class="stat-icon">👨‍🏫</div>
+                        <div class="stat-value" id="stat-correcteurs">-</div>
+                        <div class="stat-label">Correcteurs</div>
+                    </div>
+                    <div class="stat-card green">
+                        <div class="stat-icon">📚</div>
+                        <div class="stat-value" id="stat-matieres">-</div>
+                        <div class="stat-label">Matières</div>
+                    </div>
+                    <div class="stat-card orange">
+                        <div class="stat-icon">📝</div>
+                        <div class="stat-value" id="stat-notes">-</div>
+                        <div class="stat-label">Notes Enregistrées</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Candidats Page -->
+            <section class="page-section" id="page-candidats">
+                <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2>Candidats</h2>
+                        <p>Gestion des candidats à l'examen</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showCandidatModal()">+ Nouveau Candidat</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Numéro</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="candidats-tbody">
+                            <!-- JS injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Correcteurs Page -->
+            <section class="page-section" id="page-correcteurs">
+                <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2>Correcteurs</h2>
+                        <p>Gestion des correcteurs</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showCorrecteurModal()">+ Nouveau Correcteur</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="correcteurs-tbody">
+                            <!-- JS injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Matieres Page -->
+            <section class="page-section" id="page-matieres">
+                <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2>Matières</h2>
+                        <p>Gestion des matières de l'examen</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showMatiereModal()">+ Nouvelle Matière</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="matieres-tbody">
+                            <!-- JS injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Notes Page -->
+            <section class="page-section" id="page-notes">
+                <div class="page-header" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div>
+                        <h2>Notes</h2>
+                        <p>Saisie et consultation des notes par candidat, correcteur et matière</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="showNoteModal()">+ Saisir Note</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Candidat</th>
+                                <th>Correcteur</th>
+                                <th>Matière</th>
+                                <th>Note</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="notes-tbody">
+                            <!-- JS injected -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Calcul Page -->
+            <section class="page-section" id="page-calcul">
+                <div class="page-header">
+                    <h2>Calcul Note Finale</h2>
+                    <p>Calculer ou consulter la note finale d'un candidat pour une matière spécifique</p>
+                </div>
+                <div class="calcul-section">
+                    <div class="calcul-card">
+                        <h3>Sélection</h3>
+                        <div class="form-group">
+                            <label>Candidat</label>
+                            <select id="calcul-candidat"></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Matière</label>
+                            <select id="calcul-matiere"></select>
+                        </div>
+                        <div style="display:flex; gap:10px; margin-top: 20px;">
+                            <button class="btn btn-primary" id="btn-calculer" onclick="calculerNoteFinale()">🧮 Calculer</button>
+                            <button class="btn btn-outline" onclick="voirNoteFinale()">👁️ Voir Note Configurée</button>
+                        </div>
+                    </div>
+                    <div class="calcul-card" id="calcul-result" style="display: none;">
+                        <h3>Résultat</h3>
+                        <div class="result-display">
+                            <div class="result-label">Candidat</div>
+                            <div id="result-candidat" style="font-size: 16px; font-weight: bold; margin-bottom: 10px;"></div>
+                            <div class="result-label">Matière</div>
+                            <div id="result-matiere" style="font-size: 16px; font-weight: bold; margin-bottom: 20px;"></div>
+                            
+                            <div class="result-label">Note Finale</div>
+                            <div class="result-value" id="result-note">0.0</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <!-- Candidat Modal -->
+    <div class="modal-overlay" id="candidat-modal">
+        <div class="modal">
+            <h3 id="candidat-modal-title">Nouveau Candidat</h3>
+            <input type="hidden" id="candidat-id">
+            <div class="form-group">
+                <label>Nom</label>
+                <input type="text" id="candidat-nom">
+            </div>
+            <div class="form-group">
+                <label>Numéro</label>
+                <input type="text" id="candidat-numero">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeCandidatModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveCandidat()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Correcteur Modal -->
+    <div class="modal-overlay" id="correcteur-modal">
+        <div class="modal">
+            <h3 id="correcteur-modal-title">Nouveau Correcteur</h3>
+            <input type="hidden" id="correcteur-id">
+            <div class="form-group">
+                <label>Nom</label>
+                <input type="text" id="correcteur-nom">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeCorrecteurModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveCorrecteur()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Matiere Modal -->
+    <div class="modal-overlay" id="matiere-modal">
+        <div class="modal">
+            <h3 id="matiere-modal-title">Nouvelle Matière</h3>
+            <input type="hidden" id="matiere-id">
+            <div class="form-group">
+                <label>Nom</label>
+                <input type="text" id="matiere-nom">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeMatiereModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveMatiere()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Note Modal -->
+    <div class="modal-overlay" id="note-modal">
+        <div class="modal">
+            <h3>Saisir une Note</h3>
+            <div class="form-group">
+                <label>Candidat</label>
+                <select id="note-candidat"></select>
+            </div>
+            <div class="form-group">
+                <label>Correcteur</label>
+                <select id="note-correcteur"></select>
+            </div>
+            <div class="form-group">
+                <label>Matière</label>
+                <select id="note-matiere"></select>
+            </div>
+            <div class="form-group">
+                <label>Note (/20)</label>
+                <input type="number" id="note-value" step="0.5" min="0" max="20">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="closeNoteModal()">Annuler</button>
+                <button class="btn btn-primary" onclick="saveNote()">Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

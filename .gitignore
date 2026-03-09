@@ -1,0 +1,30 @@
+# === Maven ===
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# === IDE ===
+.idea/
+*.iml
+*.iws
+.project
+.classpath
+.settings/
+.vscode/
+*.code-workspace
+.qodo/
+
+# === OS ===
+.DS_Store
+Thumbs.db
+
+# === Java ===
+*.class
+*.jar
+*.war
+*.ear
+hs_err_pid*
+
+# === Spring Boot ===
+application-local.properties
