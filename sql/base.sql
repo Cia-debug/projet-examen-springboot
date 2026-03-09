@@ -30,7 +30,14 @@ CREATE TABLE t_operateur(
    
 );
 
+ALTER TABLE t_operateur
+ALTER COLUMN operateur TYPE VARCHAR(2);
 
+INSERT INTO t_operateur (operateur) VALUES
+('<'),
+('>'),
+('<='),
+('>=');
 
 CREATE TABLE t_parametre(
     id SERIAL PRIMARY KEY,
@@ -54,7 +61,6 @@ CREATE TABLE t_note(
     FOREIGN KEY (id_correcteur) REFERENCES t_correcteur(id),
     FOREIGN KEY (id_matiere) REFERENCES t_matiere(id)
 );
-
 
 
 -- CREATE TABLE t_noteFinale(

@@ -3,4 +3,5 @@ git add .
 git commit -m "Initial Spring Boot project"
 git branch -M main
 git remote add origin <repo>
+git remote add origin https://github.com/Cia-debug/projet-examen-springboot.git
 git push -u origin main 

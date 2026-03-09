@@ -7,3 +7,5 @@ TRUNCATE TABLE
     t_candidat,
     t_matiere
 RESTART IDENTITY CASCADE;
+
+truncate table t_operateur RESTART IDENTITY CASCADE;
