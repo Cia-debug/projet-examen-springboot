@@ -11,11 +11,11 @@ public class Operateur {
     private Long id;
 
     @Column(nullable = false)
-    private Integer operateur;
+    private String operateur;
 
     public Operateur() {}
 
-    public Operateur(Integer operateur) {
+    public Operateur(String operateur) {
         this.operateur = operateur;
     }
 
@@ -24,6 +24,6 @@ public class Operateur {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Integer getOperateur() { return operateur; }
-    public void setOperateur(Integer operateur) { this.operateur = operateur; }
+    public String getOperateur() { return operateur; }
+    public void setOperateur(String operateur) { this.operateur = operateur; }
 }

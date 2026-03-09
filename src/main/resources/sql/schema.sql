@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS t_resolution(
 
 CREATE TABLE IF NOT EXISTS t_operateur(
     id SERIAL PRIMARY KEY,
-    operateur INT NOT NULL
+    operateur VARCHAR(10) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS t_parametre(
@@ -86,24 +86,28 @@ INSERT INTO t_matiere (nom)
 SELECT 'Anglais' WHERE NOT EXISTS (SELECT 1 FROM t_matiere WHERE nom = 'Anglais');
 
 INSERT INTO t_resolution (nom)
-SELECT 'plus_petit' WHERE NOT EXISTS (SELECT 1 FROM t_resolution WHERE nom = 'plus_petit');
+SELECT 'Petit' WHERE NOT EXISTS (SELECT 1 FROM t_resolution WHERE nom = 'Petit');
 INSERT INTO t_resolution (nom)
-SELECT 'plus_grand' WHERE NOT EXISTS (SELECT 1 FROM t_resolution WHERE nom = 'plus_grand');
+SELECT 'Grand' WHERE NOT EXISTS (SELECT 1 FROM t_resolution WHERE nom = 'Grand');
 INSERT INTO t_resolution (nom)
-SELECT 'moyenne' WHERE NOT EXISTS (SELECT 1 FROM t_resolution WHERE nom = 'moyenne');
+SELECT 'Moyenne' WHERE NOT EXISTS (SELECT 1 FROM t_resolution WHERE nom = 'Moyenne');
 
 INSERT INTO t_operateur (operateur)
-SELECT 1 WHERE NOT EXISTS (SELECT 1 FROM t_operateur WHERE operateur = 1);
+SELECT '<' WHERE NOT EXISTS (SELECT 1 FROM t_operateur WHERE operateur = '<');
 INSERT INTO t_operateur (operateur)
-SELECT 2 WHERE NOT EXISTS (SELECT 1 FROM t_operateur WHERE operateur = 2);
+SELECT '<=' WHERE NOT EXISTS (SELECT 1 FROM t_operateur WHERE operateur = '<=');
+INSERT INTO t_operateur (operateur)
+SELECT '>' WHERE NOT EXISTS (SELECT 1 FROM t_operateur WHERE operateur = '>');
+INSERT INTO t_operateur (operateur)
+SELECT '>=' WHERE NOT EXISTS (SELECT 1 FROM t_operateur WHERE operateur = '>=');
 
 INSERT INTO t_parametre (id_matiere, diff, id_operateur, id_resolution)
 SELECT 1, 3.00, 1, 1
 WHERE NOT EXISTS (SELECT 1 FROM t_parametre WHERE id_matiere = 1 AND diff = 3.00 AND id_operateur = 1);
 
 INSERT INTO t_parametre (id_matiere, diff, id_operateur, id_resolution)
-SELECT 1, 3.00, 2, 3
-WHERE NOT EXISTS (SELECT 1 FROM t_parametre WHERE id_matiere = 1 AND diff = 3.00 AND id_operateur = 2);
+SELECT 1, 3.00, 3, 3
+WHERE NOT EXISTS (SELECT 1 FROM t_parametre WHERE id_matiere = 1 AND diff = 3.00 AND id_operateur = 3);
 
 INSERT INTO t_note (id_candidat, id_correcteur, id_matiere, note)
 SELECT 1, 1, 1, 6

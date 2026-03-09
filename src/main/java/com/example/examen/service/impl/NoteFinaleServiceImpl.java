@@ -110,18 +110,20 @@ public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
         BigDecimal noteFinaleValue = null;
 
         for (Parametre parametre : parametres) {
-            int operateurCode = parametre.getOperateur().getOperateur();
+            String operateurCode = parametre.getOperateur().getOperateur();
             BigDecimal diffParam = parametre.getDiff();
             String resolutionNom = parametre.getResolution().getNom();
 
             boolean conditionSatisfaite = false;
 
-            if (operateurCode == 1) {
-                // opérateur "<" : différence < diff
+            if ("<".equals(operateurCode)) {
                 conditionSatisfaite = difference.compareTo(diffParam) < 0;
-            } else if (operateurCode == 2) {
-                // opérateur ">" : différence > diff
+            } else if ("<=".equals(operateurCode)) {
+                conditionSatisfaite = difference.compareTo(diffParam) <= 0;
+            } else if (">".equals(operateurCode)) {
                 conditionSatisfaite = difference.compareTo(diffParam) > 0;
+            } else if (">=".equals(operateurCode)) {
+                conditionSatisfaite = difference.compareTo(diffParam) >= 0;
             }
 
             if (conditionSatisfaite) {
@@ -152,9 +154,9 @@ public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
                                            BigDecimal noteMin,
                                            BigDecimal noteMax) {
         return switch (resolution) {
-            case "plus_petit" -> noteMin;
-            case "plus_grand" -> noteMax;
-            case "moyenne" -> calculerMoyenne(notes);
+            case "Petit" -> noteMin;
+            case "Grand" -> noteMax;
+            case "Moyenne" -> calculerMoyenne(notes);
             default -> throw new RuntimeException("Résolution inconnue : " + resolution);
         };
     }
