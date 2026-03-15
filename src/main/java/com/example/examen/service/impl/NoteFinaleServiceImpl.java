@@ -3,6 +3,8 @@ package com.example.examen.service.impl;
 import com.example.examen.model.entity.*;
 import com.example.examen.repository.*;
 import com.example.examen.service.NoteFinaleServiceInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,6 +15,8 @@ import java.util.Optional;
 
 @Service
 public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
+
+    private static final Logger logger = LoggerFactory.getLogger(NoteFinaleServiceImpl.class);
 
     private final NoteRepository noteRepository;
     private final ParametreRepository parametreRepository;
@@ -109,10 +113,19 @@ public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
         // 4 & 5. Évaluer chaque paramètre et appliquer la résolution
         BigDecimal noteFinaleValue = null;
 
+        logger.info("Calcul note finale pour candidat: {}, matiere: {}. Difference: {}", idCandidat, idMatiere, difference);
+
         for (Parametre parametre : parametres) {
+            if (parametre.getOperateur() == null || parametre.getResolution() == null) {
+                logger.warn("Paramètre ID {} ignoré (Opérateur ou Résolution absent)", parametre.getId());
+                continue;
+            }
+
             String operateurCode = parametre.getOperateur().getOperateur();
             BigDecimal diffParam = parametre.getDiff();
             String resolutionNom = parametre.getResolution().getNom();
+
+            logger.debug("Évaluation paramètre: {} {} {} ?", difference, operateurCode, diffParam);
 
             boolean conditionSatisfaite = false;
 
@@ -127,6 +140,7 @@ public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
             }
 
             if (conditionSatisfaite) {
+                logger.info("Condition satisfaite pour paramètre {}. Application résolution: {}", parametre.getId(), resolutionNom);
                 noteFinaleValue = appliquerResolution(resolutionNom, notes, noteMin, noteMax);
                 break;
             }
@@ -134,6 +148,7 @@ public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
 
         // Si aucune règle n'a matché, on prend la moyenne par défaut
         if (noteFinaleValue == null) {
+            logger.info("Aucune condition matche. Utilisation de la moyenne par défaut.");
             noteFinaleValue = calculerMoyenne(notes);
         }
 
@@ -153,12 +168,19 @@ public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
                                            List<Note> notes,
                                            BigDecimal noteMin,
                                            BigDecimal noteMax) {
-        return switch (resolution) {
-            case "Petit" -> noteMin;
-            case "Grand" -> noteMax;
-            case "Moyenne" -> calculerMoyenne(notes);
-            default -> throw new RuntimeException("Résolution inconnue : " + resolution);
-        };
+        if (resolution == null) return calculerMoyenne(notes);
+        
+        String resTrim = resolution.trim();
+        if (resTrim.equalsIgnoreCase("Petit")) return noteMin;
+        if (resTrim.equalsIgnoreCase("Grand")) return noteMax;
+        if (resTrim.equalsIgnoreCase("Moyenne")) return calculerMoyenne(notes);
+        
+        // Compatibilité avec les anciens noms si besoin
+        if (resTrim.equalsIgnoreCase("plus_petit")) return noteMin;
+        if (resTrim.equalsIgnoreCase("plus_grand")) return noteMax;
+        if (resTrim.equalsIgnoreCase("moyenne")) return calculerMoyenne(notes);
+
+        throw new RuntimeException("Résolution inconnue : [" + resolution + "]");
     }
 
     private BigDecimal calculerMoyenne(List<Note> notes) {

@@ -1,0 +1,28 @@
+# Commandes Git pour enregistrer les modifications et préparer une Pull Request
+
+Voici les étapes à suivre dans votre terminal (PowerShell ou Bash) :
+
+## 1. Enregistrer les modifications localement
+Si vous avez fait de nouveaux changements depuis le dernier commit :
+git add .
+git commit -m "Votre message de commit ici"
+
+## 2. Envoyer les modifications vers le serveur (GitHub/GitLab)
+Assurez-vous d'être sur la bonne branche (ex: develop) :
+git push origin develop
+
+## 3. Créer une Pull Request (PR)
+Une Pull Request se fait généralement via l'interface web de votre plateforme :
+
+### Sur GitHub :
+1. Allez sur la page de votre dépôt (repository).
+2. Un bandeau jaune "Compare & pull request" devrait apparaître pour la branche que vous venez de pousser. Cliquez dessus.
+3. Vérifiez la branche de base (ex: 'main') et la branche à comparer (ex: 'develop').
+4. Ajoutez un titre et une description, puis cliquez sur "Create pull request".
+
+### Via la ligne de commande (si vous avez installé 'gh' - GitHub CLI) :
+gh pr create --title "Titre de la PR" --body "Description des changements" --base main --head develop
+
+---
+Note : Dans les étapes précédentes, nous avons déjà fait le 'git add' et le 'git commit'. 
+Il vous reste principalement à faire le 'git push' pour pouvoir ensuite créer la PR sur le web.

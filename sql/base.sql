@@ -27,17 +27,13 @@ CREATE TABLE t_resolution(
 CREATE TABLE t_operateur(
     id SERIAL PRIMARY KEY,
     operateur INT NOT NULL
-   
 );
-
 ALTER TABLE t_operateur
 ALTER COLUMN operateur TYPE VARCHAR(2);
 
-INSERT INTO t_operateur (operateur) VALUES
-('<'),
-('>'),
-('<='),
-('>=');
+
+
+
 
 CREATE TABLE t_parametre(
     id SERIAL PRIMARY KEY,
@@ -83,64 +79,52 @@ CREATE TABLE t_notefinale(
 
 
 INSERT INTO t_candidat (nom, numero) VALUES
-('Rakoto Jean', 'C001');
-INSERT INTO t_correcteur (nom) VALUES
-('Prof Rakoto'),
-('Prof Rabe'),
-('Prof Andria'),
-('Prof Ranaivo'),
-('Prof Rasoa');
-INSERT INTO t_matiere (nom) VALUES
-('Mathematiques'),
-('Physique'),
-('Chimie'),
-('Informatique'),
-('Anglais');
-INSERT INTO t_resolution (nom) VALUES
-('plus_petit'),
-('plus_grand'),
-('moyenne');
-INSERT INTO t_operateur (operateur) VALUES
-(1), -- <
-(2); -- >
-INSERT INTO t_parametre (id_matiere, diff, id_operateur, id_resolution) VALUES
-(1, 3.00, 1, 1),
-(1, 3.00, 2, 3);  
-INSERT INTO t_note (id_candidat, id_correcteur, id_matiere, note) VALUES
--- Mathématiques (matiere 1)
-(1, 1, 1, 6),
-(1, 2, 1, 7),
-(1, 3, 1, 7);
+('Candidat1', 'C001'),
+('Candidat2', 'C002');
 
-------------test 2 -------------------------
-INSERT INTO t_candidat (nom, numero) VALUES
-('Rakoto Jean', 'C001');
 INSERT INTO t_correcteur (nom) VALUES
-('Prof Rakoto'),
-('Prof Rabe'),
-('Prof Andria'),
-('Prof Ranaivo'),
-('Prof Rasoa');
+('Correcteur3');
+('Correcteur2'),
+('Correcteur3');
+
 INSERT INTO t_matiere (nom) VALUES
-('Mathematiques'),
-('Physique'),
-('Chimie'),
-('Informatique'),
-('Anglais');
+('JAVA'),
+('PHP');
+
 INSERT INTO t_resolution (nom) VALUES
-('plus_petit'),
-('plus_grand'),
-('moyenne');
+('Petit'),
+('Grand'),
+('Moyenne');
+
 INSERT INTO t_operateur (operateur) VALUES
-(1), -- >
-(2); -- <
+('<'),
+('<='),
+('>'),
+('>=');
+
+
+
+
+-------------------------------------------------------
 INSERT INTO t_parametre (id_matiere, diff, id_operateur, id_resolution) VALUES
-(1, 4.00, 2, 3),
-(1, 6.00, 1, 2),
-(1, 2.00, 2, 1);  
+(1, 7.00, 1, 2),
+(1, 7.00, 4, 3),
+(2, 2.00, 2, 1),
+(2, 2.00, 3, 2);
+
+
 INSERT INTO t_note (id_candidat, id_correcteur, id_matiere, note) VALUES
--- Mathématiques (matiere 1)
-(1, 1, 1, 12),
+(1, 1, 1, 15),
 (1, 2, 1, 10),
-(1, 3, 1, 8);
+(1, 9, 1, 12),
+
+(1, 1, 2, 10),
+(1, 2, 2, 10),
+
+(2, 1, 1, 8),
+(2, 2, 1, 12),
+(2, 9, 1, 13),
+
+(2, 1, 2, 13),
+(2, 2, 2, 11);
 

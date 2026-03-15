@@ -8,4 +8,4 @@ TRUNCATE TABLE
     t_matiere
 RESTART IDENTITY CASCADE;
 
-truncate table t_operateur RESTART IDENTITY CASCADE;
+truncate table t_note RESTART IDENTITY CASCADE;
