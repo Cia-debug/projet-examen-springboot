@@ -146,10 +146,47 @@ public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
             }
         }
 
-        // Si aucune règle n'a matché, on prend la moyenne par défaut
+        // Si aucune règle n'a matché, on cherche le paramètre dont la limite (diff)
+        // est la plus proche de la différence calculée, et on applique sa résolution.
+        // En cas d'égalité de distance entre deux limites, on prend la plus petite note.
         if (noteFinaleValue == null) {
-            logger.info("Aucune condition matche. Utilisation de la moyenne par défaut.");
-            noteFinaleValue = calculerMoyenne(notes);
+            logger.info("Aucune condition matche. Recherche du paramètre le plus proche (différence={}).", difference);
+
+            Parametre parametreLePlusProche = null;
+            BigDecimal distanceMin = null;
+            boolean egalite = false;
+
+            for (Parametre parametre : parametres) {
+                if (parametre.getResolution() == null) continue;
+
+                BigDecimal distance = difference.subtract(parametre.getDiff()).abs();
+                logger.debug("Paramètre ID {} → diff={}, distance={}", parametre.getId(), parametre.getDiff(), distance);
+
+                if (distanceMin == null || distance.compareTo(distanceMin) < 0) {
+                    distanceMin = distance;
+                    parametreLePlusProche = parametre;
+                    egalite = false;
+                } else if (distance.compareTo(distanceMin) == 0) {
+                    egalite = true;
+                }
+            }
+
+            if (egalite) {
+                // Distances égales → on prend la plus petite note
+                logger.info("Distances égales entre plusieurs limites. Application de la plus petite note.");
+                noteFinaleValue = noteMin;
+            } else if (parametreLePlusProche != null) {
+                logger.info("Paramètre le plus proche : ID={}, diff={}, résolution={}.",
+                        parametreLePlusProche.getId(),
+                        parametreLePlusProche.getDiff(),
+                        parametreLePlusProche.getResolution().getNom());
+                noteFinaleValue = appliquerResolution(
+                        parametreLePlusProche.getResolution().getNom(), notes, noteMin, noteMax);
+            } else {
+                // Garder la moyenne comme dernier recours si tous les paramètres sont invalides
+                logger.warn("Aucun paramètre valide trouvé. Fallback sur la moyenne.");
+                noteFinaleValue = calculerMoyenne(notes);
+            }
         }
 
         // 6. Enregistrer dans t_notefinale
