@@ -1,3 +1,6 @@
+create database examen;
+\c examen;
+
 CREATE TABLE t_candidat(
     id SERIAL PRIMARY KEY,
     nom VARCHAR(255) NOT NULL,
@@ -85,8 +88,8 @@ INSERT INTO t_candidat (nom, numero) VALUES
 
 INSERT INTO t_correcteur (nom) VALUES
 ('Correcteur1'),
-('Correcteur2');
-
+('Correcteur2'),
+('Correcteur3');
 
 INSERT INTO t_matiere (nom) VALUES
 ('JAVA'),
@@ -106,8 +109,11 @@ INSERT INTO t_operateur (operateur) VALUES
 
 
 -------------------------------------------------------
-3526.md
+INSERT INTO t_parametre (id_matiere, diff, id_operateur, id_resolution) VALUES
+(1, 5.00, 4, 2),
+(1, 9.00, 1, 3);
 
 
-
-
+INSERT INTO t_note (id_candidat, id_correcteur, id_matiere, note) VALUES
+(1, 1, 1, 10),
+(1, 2, 1, 18);

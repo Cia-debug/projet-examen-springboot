@@ -115,6 +115,8 @@ public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
 
         logger.info("Calcul note finale pour candidat: {}, matiere: {}. Difference: {}", idCandidat, idMatiere, difference);
 
+        List<Parametre> parametresSatisfaits = new java.util.ArrayList<>();
+
         for (Parametre parametre : parametres) {
             if (parametre.getOperateur() == null || parametre.getResolution() == null) {
                 logger.warn("Paramètre ID {} ignoré (Opérateur ou Résolution absent)", parametre.getId());
@@ -123,7 +125,6 @@ public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
 
             String operateurCode = parametre.getOperateur().getOperateur();
             BigDecimal diffParam = parametre.getDiff();
-            String resolutionNom = parametre.getResolution().getNom();
 
             logger.debug("Évaluation paramètre: {} {} {} ?", difference, operateurCode, diffParam);
 
@@ -140,53 +141,56 @@ public class NoteFinaleServiceImpl implements NoteFinaleServiceInterface {
             }
 
             if (conditionSatisfaite) {
-                logger.info("Condition satisfaite pour paramètre {}. Application résolution: {}", parametre.getId(), resolutionNom);
-                noteFinaleValue = appliquerResolution(resolutionNom, notes, noteMin, noteMax);
-                break;
+                logger.info("Condition satisfaite pour paramètre ID={}.", parametre.getId());
+                parametresSatisfaits.add(parametre);
             }
         }
 
-        // Si aucune règle n'a matché, on cherche le paramètre dont la limite (diff)
-        // est la plus proche de la différence calculée, et on applique sa résolution.
-        // En cas d'égalité de distance entre deux limites, on prend la plus petite note.
-        if (noteFinaleValue == null) {
-            logger.info("Aucune condition matche. Recherche du paramètre le plus proche (différence={}).", difference);
+        // Si plusieurs règles matchent (ou aucune), on cherche la limite (diff) la plus proche.
+        // On cherche parmi les règles satisfaites. Si aucune n'est satisfaite (fallback),
+        // on cherche parmi tous les paramètres.
+        List<Parametre> listeAFiltrer = parametresSatisfaits.isEmpty() ? parametres : parametresSatisfaits;
+        
+        if (parametresSatisfaits.isEmpty()) {
+            logger.info("Aucune condition matche. Recherche du paramètre le plus proche parmi tous (fallback).");
+        } else if (parametresSatisfaits.size() > 1) {
+            logger.info("Plusieurs conditions matchent. Recherche du paramètre le plus proche parmi les correspondants.");
+        }
 
-            Parametre parametreLePlusProche = null;
-            BigDecimal distanceMin = null;
-            boolean egalite = false;
+        Parametre parametreLePlusProche = null;
+        BigDecimal distanceMin = null;
+        boolean egalite = false;
 
-            for (Parametre parametre : parametres) {
-                if (parametre.getResolution() == null) continue;
+        for (Parametre parametre : listeAFiltrer) {
+            if (parametre.getResolution() == null) continue;
 
-                BigDecimal distance = difference.subtract(parametre.getDiff()).abs();
-                logger.debug("Paramètre ID {} → diff={}, distance={}", parametre.getId(), parametre.getDiff(), distance);
+            BigDecimal distance = difference.subtract(parametre.getDiff()).abs();
+            logger.debug("Paramètre ID {} → diff={}, distance={}", parametre.getId(), parametre.getDiff(), distance);
 
-                if (distanceMin == null || distance.compareTo(distanceMin) < 0) {
-                    distanceMin = distance;
-                    parametreLePlusProche = parametre;
-                    egalite = false;
-                } else if (distance.compareTo(distanceMin) == 0) {
-                    egalite = true;
-                }
+            if (distanceMin == null || distance.compareTo(distanceMin) < 0) {
+                distanceMin = distance;
+                parametreLePlusProche = parametre;
+                egalite = false;
+            } else if (distance.compareTo(distanceMin) == 0) {
+                egalite = true;
             }
+        }
 
-            if (egalite) {
-                // Distances égales → on prend la plus petite note
-                logger.info("Distances égales entre plusieurs limites. Application de la plus petite note.");
-                noteFinaleValue = noteMin;
-            } else if (parametreLePlusProche != null) {
-                logger.info("Paramètre le plus proche : ID={}, diff={}, résolution={}.",
-                        parametreLePlusProche.getId(),
-                        parametreLePlusProche.getDiff(),
-                        parametreLePlusProche.getResolution().getNom());
-                noteFinaleValue = appliquerResolution(
-                        parametreLePlusProche.getResolution().getNom(), notes, noteMin, noteMax);
-            } else {
-                // Garder la moyenne comme dernier recours si tous les paramètres sont invalides
-                logger.warn("Aucun paramètre valide trouvé. Fallback sur la moyenne.");
-                noteFinaleValue = calculerMoyenne(notes);
-            }
+        if (egalite) {
+            // Distances égales → on prend la plus petite note
+            logger.info("Distances égales entre plusieurs limites. Application de la plus petite note.");
+            noteFinaleValue = noteMin;
+        } else if (parametreLePlusProche != null) {
+            logger.info("Paramètre le plus proche retenu : ID={}, diff={}, résolution={}.",
+                    parametreLePlusProche.getId(),
+                    parametreLePlusProche.getDiff(),
+                    parametreLePlusProche.getResolution().getNom());
+            noteFinaleValue = appliquerResolution(
+                    parametreLePlusProche.getResolution().getNom(), notes, noteMin, noteMax);
+        } else {
+            // Garder la moyenne comme dernier recours si tous les paramètres sont invalides
+            logger.warn("Aucun paramètre valide trouvé. Fallback sur la moyenne.");
+            noteFinaleValue = calculerMoyenne(notes);
         }
 
         // 6. Enregistrer dans t_notefinale
